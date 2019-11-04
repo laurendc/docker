@@ -1,11 +1,16 @@
+# Dockerfile used to test fortune project
+# Copies latest code from the local repository
+# Repository must be cloned to the machine first
 FROM ubuntu:latest
 
-LABEL maintainer="laurendc@gmail.com"
+RUN apt-get update && apt-get upgrade -y \
+    && apt-get install fortune -y \
+    && mkdir -p /fortune/custom_fortunes
 
-RUN apt-get update && apt-get upgrade -y
+ENV PATH="/usr/games:${PATH}"
 
-RUN apt-get install fortune cowsay -y
-
-ENV PATH "$PATH:/usr/games"
+COPY ./custom_fortunes /fortune/custom_fortunes
+COPY ./setup_custom_fortunes.sh /fortune/
+RUN cd /fortune && chmod 755 setup_custom_fortunes.sh
 
 WORKDIR /fortune
